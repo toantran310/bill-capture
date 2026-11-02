@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import Layout from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import { api, type User } from "@/api/client";
-import { Plus, Pencil, Lock, Unlock } from "lucide-react";
+import LoginLinkDialog from "@/components/LoginLinkDialog";
+import { Plus, Pencil, Lock, Unlock, Link2 } from "lucide-react";
 
 interface UserFormData {
   username: string;
@@ -28,6 +29,7 @@ export default function AdminUsersPage() {
   const [form, setForm] = useState<UserFormData>(emptyForm);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [linkUser, setLinkUser] = useState<User | null>(null);
 
   const fetchUsers = () => {
     setLoading(true);
@@ -250,9 +252,8 @@ export default function AdminUsersPage() {
             {users.map((u) => (
               <div
                 key={u.id}
-                className={`rounded-xl border border-border bg-white p-4 flex items-center gap-3 ${
-                  !u.isActive ? "opacity-50" : ""
-                }`}
+                className={`rounded-xl border border-border bg-white p-4 flex items-center gap-3 ${!u.isActive ? "opacity-50" : ""
+                  }`}
               >
                 <div className="flex-1 min-w-0">
                   <div className="font-medium text-sm">{u.displayName}</div>
@@ -262,11 +263,10 @@ export default function AdminUsersPage() {
                   </div>
                   <div className="text-xs mt-0.5">
                     <span
-                      className={`inline-block px-2 py-0.5 rounded-full text-xs ${
-                        u.role === "admin"
-                          ? "bg-primary/10 text-primary"
-                          : "bg-muted text-muted-foreground"
-                      }`}
+                      className={`inline-block px-2 py-0.5 rounded-full text-xs ${u.role === "admin"
+                        ? "bg-primary/10 text-primary"
+                        : "bg-muted text-muted-foreground"
+                        }`}
                     >
                       {u.role === "admin" ? "Admin" : "Nhân viên"}
                     </span>
@@ -286,6 +286,16 @@ export default function AdminUsersPage() {
                   >
                     <Pencil className="h-4 w-4" />
                   </Button>
+                  {u.role === "user" && (
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => setLinkUser(u)}
+                      title="Link đăng nhập"
+                    >
+                      <Link2 className="h-4 w-4" />
+                    </Button>
+                  )}
                   <Button
                     variant="ghost"
                     size="icon"
@@ -304,6 +314,15 @@ export default function AdminUsersPage() {
           </div>
         )}
       </div>
+      {linkUser && (
+        <LoginLinkDialog
+          user={linkUser}
+          onClose={() => {
+            setLinkUser(null);
+            fetchUsers();
+          }}
+        />
+      )}
     </Layout>
   );
 }

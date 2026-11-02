@@ -1,8 +1,8 @@
+import { User } from "../models/user.model";
 import { Router, Request, Response } from "express";
 import bcrypt from "bcrypt";
 import { requireAuth } from "../middleware/requireAuth";
 import { requireRole } from "../middleware/requireRole";
-import { User } from "../models/user.model";
 import { Bill } from "../models/bill.model";
 
 const router = Router();
@@ -64,18 +64,23 @@ router.post("/users", async (req: Request, res: Response) => {
 // PATCH /api/admin/users/:id
 router.patch("/users/:id", async (req: Request, res: Response) => {
   try {
-    const { displayName, company, isActive, password } = req.body as {
+    const { displayName, company, isActive, password, loginLinkEnabled } = req.body as {
       displayName?: string;
       company?: string;
       isActive?: boolean;
       password?: string;
+      loginLinkEnabled?: boolean;
     };
     const update: Record<string, unknown> = {};
     if (displayName !== undefined) update.displayName = displayName;
     if (company !== undefined) update.company = company;
     if (isActive !== undefined) update.isActive = isActive;
     if (password) update.passwordHash = await bcrypt.hash(password, 12);
-
+    if (typeof loginLinkEnabled === "boolean") {
+      update.loginLinkEnabled = loginLinkEnabled;
+      // turning the link off also ends sessions that were opened with it
+      if (!loginLinkEnabled) update.$inc = { sessionVersion: 1 };
+    }
     const user = await User.findByIdAndUpdate(req.params.id, update, { new: true }).select("-passwordHash");
     if (!user) {
       res.status(404).json({ error: "User not found" });

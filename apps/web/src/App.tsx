@@ -6,6 +6,7 @@ import CapturePage from "@/pages/CapturePage";
 import MyBillsPage from "@/pages/MyBillsPage";
 import AdminUsersPage from "@/pages/admin/AdminUsersPage";
 import AdminBillsPage from "@/pages/admin/AdminBillsPage";
+import LinkWelcomePage from "@/pages/LinkWelcomePage";
 
 function RootRedirect() {
   const { user, loading } = useAuth();
@@ -34,6 +35,8 @@ export default function App() {
             <Route path="/admin/users" element={<AdminUsersPage />} />
             <Route path="/admin/bills" element={<AdminBillsPage />} />
           </Route>
+
+          <Route path="/l/:userId" element={<LinkWelcomePage />} />
 
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

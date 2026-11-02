@@ -6,6 +6,7 @@ interface AuthContextValue {
   loading: boolean;
   login: (username: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
+  loginWithLink: (token: string) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -32,8 +33,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setUser(null);
   };
 
+  const loginWithLink = async (token: string) => {
+    setUser(await api.auth.linkLogin(token));
+  };
+
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout }}>
+    <AuthContext.Provider value={{ user, loading, login, loginWithLink, logout }}>
       {children}
     </AuthContext.Provider>
   );

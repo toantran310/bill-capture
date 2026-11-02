@@ -15,6 +15,7 @@ export interface User {
   role: "user" | "admin";
   isActive?: boolean;
   createdAt?: string;
+  loginLinkEnabled?: boolean;
 }
 
 export interface Bill {
@@ -49,6 +50,18 @@ export const api = {
     logout: () =>
       apiFetch<{ ok: boolean }>("/api/auth/logout", { method: "POST" }),
     me: () => apiFetch<User>("/api/auth/me"),
+    linkPreview: (userId: string) =>
+      apiFetch<{ displayName: string; company: string }>("/api/auth/link-preview", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId }),
+      }),
+    linkLogin: (userId: string) =>
+      apiFetch<User>("/api/auth/link-login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId }),
+      }),
   },
   bills: {
     save: (data: {
@@ -88,6 +101,7 @@ export const api = {
           company: string;
           isActive: boolean;
           password: string;
+          loginLinkEnabled: boolean;
         }>
       ) =>
         apiFetch<User>(`/api/admin/users/${id}`, {

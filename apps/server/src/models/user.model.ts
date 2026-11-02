@@ -8,6 +8,8 @@ export interface IUser extends Document {
   role: "user" | "admin";
   isActive: boolean;
   createdAt: Date;
+  loginLinkEnabled: boolean;
+  sessionVersion: number;
 }
 
 const userSchema = new Schema<IUser>(
@@ -18,8 +20,22 @@ const userSchema = new Schema<IUser>(
     company: { type: String, default: "" },
     role: { type: String, enum: ["user", "admin"], default: "user" },
     isActive: { type: Boolean, default: true },
+    loginLinkEnabled: { type: Boolean, default: false },
+    sessionVersion: { type: Number, default: 0 },
   },
-  { timestamps: { createdAt: true, updatedAt: false } }
+  {
+    timestamps: { createdAt: true, updatedAt: false },
+    toJSON: {
+      virtuals: true, // adds `id` (string) next to `_id`
+      versionKey: false,
+      transform: (_doc, ret: Record<string, any>) => {
+        delete ret.passwordHash;
+        delete ret.sessionVersion;
+        return ret;
+      },
+    },
+  }
+
 );
 
 export const User = mongoose.model<IUser>("User", userSchema);
