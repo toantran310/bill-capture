@@ -16,6 +16,7 @@ export default defineConfig({
         changeOrigin: true,
       },
     },
+    allowedHosts: ["localhost", "local", "an.catlonghouse.cloud"]
   },
 });
 
