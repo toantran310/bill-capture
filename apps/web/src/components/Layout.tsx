@@ -41,7 +41,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       </main>
 
       {/* Bottom navigation */}
-      <nav className="sticky bottom-0 bg-white border-t border-border safe-area-inset-bottom">
+      <nav className="sticky bottom-0 bg-white border-t border-border pb-[env(safe-area-inset-bottom)]">
         {user?.role === "user" ? (
           <div className="flex">
             <Link

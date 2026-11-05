@@ -10,6 +10,7 @@ import {
 import { api } from "@/api/client";
 import { openinaryUrl, IMAGE_MIMES, compressImage } from "@/lib/utils";
 import { Camera, RotateCw, AlertCircle } from "lucide-react";
+import InstallHint from "@/components/InstallHint";
 
 const OPENINARY_BASE =
   (import.meta.env.VITE_OPENINARY_BASE_URL as string | undefined) ??
@@ -98,6 +99,8 @@ export default function CapturePage() {
             Chụp hóa đơn để lưu lại
           </p>
         </div>
+
+        <InstallHint />
 
         {/* Hidden camera input */}
         <input
