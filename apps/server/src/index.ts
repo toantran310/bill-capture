@@ -14,7 +14,9 @@ const app = express();
 const PORT = process.env.PORT ?? 9100;
 const MONGODB_URI = process.env.MONGODB_URI ?? "";
 const CORS_ORIGIN = process.env.CORS_ORIGIN ?? "http://localhost:5173";
-if (process.env.NODE_ENV === "production") app.set("trust proxy", 1);
+if (process.env.NODE_ENV === "production") {
+  app.set("trust proxy", Number(process.env.TRUST_PROXY ?? 1));
+}
 
 app.use(cors({ origin: CORS_ORIGIN, credentials: true }));
 app.use(express.json());
