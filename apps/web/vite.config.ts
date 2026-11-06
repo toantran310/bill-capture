@@ -34,7 +34,7 @@ export default defineConfig({
       workbox: {
         // App shell only. API calls must never be served from the SW cache.
         navigateFallback: "/index.html",
-        navigateFallbackDenylist: [/^\/api\//],
+        navigateFallbackDenylist: [/^\/api\//, /^\/l\//],
         globPatterns: ["**/*.{js,css,html,svg,png,ico,woff2}"],
         cleanupOutdatedCaches: true,
       },
