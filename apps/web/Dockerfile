@@ -1,5 +1,5 @@
 FROM node:22-slim AS build
-ARG PNPM_VERSION=10
+ARG PNPM_VERSION=12.16.1
 RUN npm i -g pnpm@${PNPM_VERSION}
 WORKDIR /repo
 

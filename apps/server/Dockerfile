@@ -1,6 +1,6 @@
 FROM node:22-slim
 # Đặt đúng phiên bản pnpm đang dùng ở máy bạn (chạy: pnpm -v)
-ARG PNPM_VERSION=10
+ARG PNPM_VERSION=12.16.1
 RUN npm i -g pnpm@${PNPM_VERSION}
 WORKDIR /repo
 
