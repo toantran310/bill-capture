@@ -6,7 +6,6 @@ import { requireAuth } from "../middleware/requireAuth";
 import mongoose from "mongoose";
 
 const router = Router();
-const isProduction = process.env.NODE_ENV === "production";
 
 const PASSWORD_SESSION_DAYS = 7;
 const LINK_SESSION_DAYS = 30; // one-tap users shouldn't need the link daily
@@ -21,7 +20,7 @@ function toPublicUser(user: IUser) {
   };
 }
 
-function issueSession(res: Response, user: IUser, days: number) {
+function issueSession(req: Request, res: Response, user: IUser, days: number) {
   const secret = process.env.JWT_SECRET;
   if (!secret) throw new Error("JWT_SECRET is not set");
   const token = jwt.sign(
@@ -37,7 +36,7 @@ function issueSession(res: Response, user: IUser, days: number) {
   res.cookie("token", token, {
     httpOnly: true,
     sameSite: "lax",
-    secure: isProduction,
+    secure: req.secure, // true only when the browser really used https
     maxAge: days * 24 * 60 * 60 * 1000,
   });
 }
@@ -59,7 +58,7 @@ router.post("/login", async (req: Request, res: Response) => {
       res.status(401).json({ error: "Invalid credentials" });
       return;
     }
-    issueSession(res, user, PASSWORD_SESSION_DAYS);
+    issueSession(req, res, user, PASSWORD_SESSION_DAYS);
     res.json(toPublicUser(user));
   } catch (err) {
     console.error(err);
@@ -119,7 +118,7 @@ router.post("/link-login", async (req: Request, res: Response) => {
       res.status(401).json({ error: "Link không hợp lệ hoặc đã bị tắt" });
       return;
     }
-    issueSession(res, user, LINK_SESSION_DAYS);
+    issueSession(req, res, user, LINK_SESSION_DAYS);
     res.json(toPublicUser(user));
   } catch (err) {
     console.error(err);
